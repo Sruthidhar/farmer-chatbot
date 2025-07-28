@@ -1,0 +1,58 @@
+import pandas as pd
+import json
+
+def load_intents_from_csv(filename):
+    # Load CSV data (assumes columns 'questions' and 'answers')
+    df = pd.read_csv(filename)
+    intents = []
+    
+    # Convert each row into a "farm" intent entry
+    for idx, row in df.iterrows():
+        intent = {
+            "tag": "farm",
+            "patterns": [row["questions"]],
+            "responses": [row["answers"]]
+        }
+        intents.append(intent)
+    
+    # Add additional predefined intents
+    greeting_intent = {
+        "tag": "greeting",
+        "patterns": ["Hello", "Hi", "Hey", "Good morning", "Greetings"],
+        "responses": [
+            "Welcome to Farmer AI Chatbot! How can I assist you today?",
+            "Hi there! I'm here to help with your farming questions."
+        ]
+    }
+    
+    farewell_intent = {
+        "tag": "goodbye",
+        "patterns": ["Bye", "Goodbye", "See you", "Farewell"],
+        "responses": [
+            "Goodbye! Happy farming!",
+            "See you later, and take care of your crops!"
+        ]
+    }
+    
+    general_intent = {
+        "tag": "general",
+        "patterns": ["Can you help me?", "I need some advice", "Assistance please"],
+        "responses": [
+            "Sure, I'm here to help! What do you need assistance with?",
+            "Let me know your question, and I'll do my best to provide an answer."
+        ]
+    }
+    
+    # Append additional intents to the list
+    intents.extend([greeting_intent, farewell_intent, general_intent])
+    return intents
+
+# Example usage: Convert CSV to intents JSON
+df_intents = load_intents_from_csv("your_file.csv")
+intents_data = {"intents": df_intents}
+
+# Save the result to a JSON file
+with open("intents.json", "w") as json_file:
+    json.dump(intents_data, json_file, indent=4)
+
+print("Conversion complete! 'intents.json' has been created.")
