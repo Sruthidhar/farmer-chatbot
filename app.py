@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify, render_template
 from chatbot import FarmerChatbot
+import os
 
 app = Flask(__name__)
 
-# Initialize the bot using CSV data (from Kaggle or your own CSV) or JSON intents.
-# Uncomment one of the following lines:
-# bot = FarmerChatbot(csv_file='your_dataset.csv')
+# Load the chatbot using JSON-based intents
 bot = FarmerChatbot(intents_file='intents.json')
 
 @app.route("/")
@@ -19,4 +18,6 @@ def chat():
     return jsonify({"response": response})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # For Render deployment — bind to 0.0.0.0 and use the dynamic PORT
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
